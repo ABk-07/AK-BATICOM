@@ -41,6 +41,8 @@ with col2:
     client_nif = st.text_input("N° IF")
     client_nis = st.text_input("N° IS")
     client_bp = st.text_input("BP")
+    client_tel1 = st.text_input("Téléphone 1")
+    client_tel2 = st.text_input("Téléphone 2")
 
 # --- PROJET ---
 projet = st.text_input("Nom du projet")
@@ -113,13 +115,34 @@ def generate_pdf(df, total_ht, tva, timbre, total_ttc, net_a_payer, mode):
     pdf.cell(200, 10, txt=f"NET À PAYER: {net_a_payer}", ln=True)
     pdf.cell(200, 10, txt=f"Mode de paiement: {mode}", ln=True)
 
+    pdf.cell(200, 10, txt=f"Téléphone 1: {client_tel1}", ln=True)
+    pdf.cell(200, 10, txt=f"Téléphone 2: {client_tel2}", ln=True)
+
     pdf.output("facture.pdf")
 
 if st.button("Télécharger en PDF"):
     generate_pdf(st.session_state.df, total_ht, tva, timbre, total_ttc, net_a_payer, mode)
     st.success("Facture PDF générée avec succès ! (facture.pdf)")
 
+    # Bouton de téléchargement direct
+    with open("facture.pdf", "rb") as f:
+        st.download_button(
+            label="📥 Télécharger la facture PDF",
+            data=f,
+            file_name="facture.pdf",
+            mime="application/pdf"
+        )
+
 # --- GENERER EXCEL ---
 if st.button("Télécharger en Excel"):
     st.session_state.df.to_excel("facture.xlsx", index=False)
     st.success("Facture Excel générée avec succès ! (facture.xlsx)")
+
+    # Bouton de téléchargement direct
+    with open("facture.xlsx", "rb") as f:
+        st.download_button(
+            label="📥 Télécharger la facture Excel",
+            data=f,
+            file_name="facture.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
